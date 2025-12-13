@@ -5,6 +5,6 @@ import { defineConfig } from "astro/config";
 
 export default defineConfig({
   output: "static",
-  site: "https://timasv-uk..github.io",
+  site: "https://timasv-uk.github.io",
   base: '/my_readEra',
 });
