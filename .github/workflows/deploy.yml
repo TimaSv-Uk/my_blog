@@ -36,7 +36,7 @@ jobs:
         with:
           # This should match the directory where Astro outputs your static files.
           # For Astro, this is typically 'dist' unless configured otherwise.
-          path: ${{ steps.astro-build.outputs.dist-dir }}
+          path: dist
 
   deploy:
     needs: build
