@@ -122,3 +122,26 @@ so far i use flex:wrap and it kinda works but i have no idea how to add shelf pl
                 </script>
 
             ```
+### fix of a bug that leaves empty rows on resize and add event listener on ContentLoaded, btw
+            ```
+
+            function removeEmptyRows() {
+              const shelf = document.getElementById("shelf");
+
+              [...shelf.children].forEach(node => {
+                if (!node.querySelector(".book")) {
+                  node.remove();
+                }
+              });
+            }
+            window.addEventListener("DOMContentLoaded",() =>{
+
+              setUpShelf()
+            })
+            window.addEventListener("resize",() =>{
+
+              removeEmptyRows()
+              setUpShelf()
+            })
+
+            ```
