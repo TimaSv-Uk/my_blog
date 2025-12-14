@@ -3,56 +3,64 @@ import Book from "./Book.astro";
 
 const { jsonBooks } = Astro.props;
 
-const bookCount = jsonBooks.length;
 const bookSizeMinMax={
     "page_px_ratio":20,
     "min_height":170,"max_height":200, 
     "min_width":50,"max_width":180, 
     };
-function chunkArray(arr, size) {
-  const result = [];
-  for (let i = 0; i < arr.length; i += size) {
-    result.push(arr.slice(i, i + size));
-  }
-  return result;
-}
 ---
 
-<script define:vars={{bookCount,bookSizeMinMax}}>
+<div id="shelf" class="shelf-container"
+  style=`
+    display: flex;
+    flex: col;
+    gap: 0.1rem;     
+    border: 3px solid #D4D9E4;
+    width: 85%;
+    align-items:flex-end;
+`
+>
+  {jsonBooks.map((jsonBook) => (
+    <Book jsonBook={jsonBook} bookSizeMinMax={bookSizeMinMax} />
+  ))} </div>
+<script define:vars={{jsonBooks, bookSizeMinMax}}>
+
+  const bookCount = jsonBooks.length;
+  function chunkArray(arr, size) {
+    const result = []; for (let i = 0; i < arr.length; i += size) {
+      result.push(arr.slice(i, i + size));
+    }
+    return result;
+  }
   const booksPerRow = Math.max(
     1,
     Math.floor((bookCount * bookSizeMinMax.max_width)/window.innerWidth)
   );
-  console.log(booksPerRow)
+  let bookRows = chunkArray(jsonBooks,booksPerRow);
+  let shelfRows = [];
+
+  const shelf = document.getElementById(`shelf`);
+  for(let row = 0;bookRows.length >row; row++){
+      let bookRow = bookRows[row];
+      shelfRows.push(document.createElement("div"));
+      shelfRows[row].id = `${row}`
+      shelfRows[row].className = `shelfRow`
+      shelfRows[row].style = `
+        border: 5px solid #B65D66;
+        // flex: row;
+        // display: flex;
+        // align-items:flex-end;
+      `
+
+      for(let bookIndex = 0;bookRow.length >bookIndex; bookIndex++){
+        let book = bookRow[bookIndex];
+        const renderedBook = document.getElementById(`${book.uri}`);
+        shelfRows[row].appendChild(renderedBook);
+        console.log(renderedBook)
+      }
+    shelf.appendChild( shelfRows[row]);
+  }
   console.log(window.innerWidth)
   console.log(window.innerHeight)
+
 </script>
-
-
-<div id="shelf"
-  style="
-    
-    border: 3px solid #D4D9E4;
-    width: fit-content;
-  "
->
-  {chunkArray(jsonBooks,2).map((rowOfBooks,i) => (
-
-  <div id=`${i}`
-      class="shelf_row"
-      style="
-        border: 3px solid #E03F66;
-
-    width: fit-content;
-        display:flex;
-        flex:col;
-      "
-    >
-
-      {rowOfBooks.map((jsonBook) => (
-        <Book jsonBook={jsonBook} bookSizeMinMax={bookSizeMinMax} />
-      ))} 
-    </div>
-  ))} 
-</div>
-

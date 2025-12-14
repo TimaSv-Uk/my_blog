@@ -34,3 +34,33 @@ export class RNG {
 // var digits = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'];
 // for (var i = 0; i < 10; i++)
 //   console.log(rng.choice(digits));
+//
+
+
+
+// <div id="shelf"
+//   style="
+//     
+//     border: 3px solid #D4D9E4;
+//     width: fit-content;
+//   "
+//   
+// >
+//   {chunkArray(jsonBooks,10).map((rowOfBooks,i) => (
+//   <div id=`${i}`
+//       class="shelf_row"
+//       style="
+//         border: 3px solid #E03F66;
+//
+//       //width: fit-content;
+//         display:flex;
+//         flex:row;
+//       "
+//     >
+//       {rowOfBooks.map((jsonBook) => (
+//         <Book jsonBook={jsonBook} bookSizeMinMax={bookSizeMinMax} />
+//       ))} 
+//     </div>
+//   ))} 
+// </div>
+

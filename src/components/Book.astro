@@ -16,10 +16,12 @@ const isFavorite = jsonBook.data.doc_favorites_time > 0;
 const bookStyle = `
   background: #3E4B5B;
   border: 2px solid ${isFavorite ? "#B48EAD" : "#81A1C1"};
-  color: ${isFavorite ? "#B48EAD" : "#81A1C1"}; ${isFavorite ? "margin-bottom: 2px;" : ""}
+  text-wrap: wrap;
+  color: ${isFavorite ? "#B48EAD" : "#81A1C1"}; 
   width: ${book_width}px;
   height: ${book_height}px;
-// transform: rotate(90deg) scaleX(-1);
+  //box-shadow: 0 5px 0 0 #D4D9E4;
+  // transform: rotate(90deg) scaleX(-1);
 `;
 ---
   <div

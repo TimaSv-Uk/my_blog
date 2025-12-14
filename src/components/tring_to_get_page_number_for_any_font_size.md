@@ -266,7 +266,7 @@ NOTE:  code to get font size
 
     ```
 
-# DEAM it i could have figured that i will render books on number of pages per pixel  
+# DAMN it i could have figured that i will render books on number of pages per pixel  
 
         ```
         const pages_font_ratio = readera_font_dended_page_count/real_page_count
@@ -284,7 +284,7 @@ NOTE:  code to get font size
             "min_width":40,"max_width":200, 
             };
         ```
-# and final goal is sorta accomlished YAY ME 
+# and final goal is sorta accomplished YAY ME 
 
         ```
         let book_width = dataDocSizeData.pagesCount/bookSizeMinMax.page_px_ratio;
