@@ -161,3 +161,5 @@ so far i use flex:wrap and it kinda works but i have no idea how to add shelf pl
 ##  in this code i bet on the fact that all books on shelw will be MaxSize so they all fit
 ##  i guess i will count eachBookSize (books are prerenderd) and somehow split it from there
 ### P.S. i just came up with this solution GO ME!!!!!!🪙🪙🪙🪙
+
+![A starry night sky.](../assets/dev/shelf1_0.png)

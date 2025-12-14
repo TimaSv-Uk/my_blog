@@ -1,6 +1,6 @@
 ---
 import Book from "./Book.astro";
-
+import border from '../assets/border.png'
 const { jsonBooks } = Astro.props;
 
 const bookSizeMinMax={
@@ -19,7 +19,7 @@ const bookSizeMinMax={
     <Book jsonBook={jsonBook} bookSizeMinMax={bookSizeMinMax} />
   ))} </div>
 
-<script define:vars={{jsonBooks, bookSizeMinMax}}>
+<script define:vars={{jsonBooks, bookSizeMinMax,border}}>
 
   const bookCount = jsonBooks.length;
 
@@ -42,10 +42,8 @@ const bookSizeMinMax={
     );
 
     // (bookSizeMinMax.min_width+bookSizeMinMax.max_width)/2)
-    console.log(booksPerRow)
     let bookRows = chunkArray(jsonBooks,booksPerRow);
 
-    console.log(bookRows)
     const shelf = document.getElementById(`shelf`);
 
       // console.log(shelf)
@@ -58,10 +56,9 @@ const bookSizeMinMax={
         shelfRow.id = `${row}_row`
         shelfRow.className = `shelfRow`
       }
-      //
+        // console.log(border.src);
         shelfRow.style = `
-        border: 10px solid transparent; /* Required for border-image */
-        border-image: url("/src/assets/border.png") 30 stretch;
+        border: 10px solid #D4D9E4; 
         display: flex;
         flex-direction: row;
         gap: 0.1rem;     
@@ -89,10 +86,16 @@ const bookSizeMinMax={
   }
 function removeEmptyRows() {
   const shelf = document.getElementById("shelf");
-
+// shelf.replaceChildren(); 
   [...shelf.children].forEach(node => {
     if (!node.querySelector(".book")) {
       node.remove();
+    }
+  });
+
+  [...shelf.children].forEach(row => {
+    if (row.children.length === 0) {
+      row.remove();
     }
   });
 }
@@ -103,8 +106,8 @@ function removeEmptyRows() {
   })
   window.addEventListener("resize",() =>{
 
-    removeEmptyRows()
     setUpShelf()
+    removeEmptyRows()
   })
 
 </script>
