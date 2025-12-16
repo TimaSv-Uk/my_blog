@@ -28,24 +28,65 @@ const bookStyle = `
 let randomColor = "#" + ((Math.random() * 0xffffff) << 0).toString(16);
 let bookTitle = jsonBook.data.doc_title ?? "Title";
 let filterdBookTitle = jsonBook.data.doc_title
-  ? jsonBook.data.doc_title.split(" ").slice(0, 6).join(" ")
+  ? jsonBook.data.doc_title.split(" ").slice(0, 6).join(" ").trimEnd()
   : "TITLE";
-let bookTitleFontSize =
-  bookTitle.split(" ").length > 3
-    ? `${book_width / 5}px`
-    : `${book_width / 4}px`;
-console.log(bookTitle, bookTitleFontSize);
+
+let fontReferenceWidth =
+  (bookSizeMinMax.min_width + bookSizeMinMax.min_width) / 2;
+
+let bookTitleFontSize = `${fontReferenceWidth}px`;
+switch (true) {
+  case bookTitle.length > 60:
+    bookTitleFontSize = `${fontReferenceWidth / 6}px`;
+    break;
+  case bookTitle.length > 50:
+    bookTitleFontSize = `${fontReferenceWidth / 5}px`;
+    break;
+  case bookTitle.length > 25:
+    bookTitleFontSize = `${fontReferenceWidth / 4.5}px`;
+    break;
+  case bookTitle.length > 15:
+    bookTitleFontSize = `${fontReferenceWidth / 4}px`;
+    break;
+  case bookTitle.length > 10:
+    bookTitleFontSize = `${fontReferenceWidth / 3.5}px`;
+    break;
+  default:
+    bookTitleFontSize = `${fontReferenceWidth / 3}px`;
+
+}
+
+// TODO: handle EXEPTION large title on small books  is overflowing
+function wrapBookTitle(title) {
+  if (!title) {
+    return "TITLE";
+  }
+  title = title.trimEnd();
+  title = title.split(" ");
+  let charCount = 0;
+  for (let i = 0; i < title.length; i += 1) {
+    let previosCharCount = charCount;
+    charCount += title[i].length;
+
+    if (charCount >= 15 && charCount - previosCharCount > 3) {
+      title[i] += "<br>";
+    }
+  }
+  return title.join(" ");
+}
+filterdBookTitle = wrapBookTitle(filterdBookTitle);
 ---
 
 <div id={jsonBook.uri} class="book" style={bookStyle}>
   <div
     style=`
-    background: ${randomColor};
+    // background: ${randomColor};
     height: 20%;
-    opacity: 0.2;
-
+    // opacity: 0.2;
+    text: #E3E7EE;
   `
   >
+    {bookTitle.length}
   </div>
   <div
     style=`
@@ -54,18 +95,17 @@ console.log(bookTitle, bookTitleFontSize);
     display:flex;
     align-items:center;
     justify-content:center;
+      overflow: hidden;
   `
   >
     <div
       style=`
-      margin-top: 10%;
-      margin-bottom: 10%;
-      text-wrap: wrap;
+      text-wrap: balance;
       transform: rotate(-90deg);
       font-size: ${bookTitleFontSize}; 
-    `
-    >
-      {filterdBookTitle}
-    </div>
+      align-items:center;
+      `
+      set:html={filterdBookTitle}
+    />
   </div>
 </div>
