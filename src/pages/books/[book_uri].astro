@@ -1,0 +1,19 @@
+---
+import LibraryLayout from "/src/layouts/LibraryLayout.astro";
+import library from "/src/readEra_backup/library.json";
+import Book from "/src/components/book_shelf/Book.astro";
+
+export async function getStaticPaths() {
+  return library.docs.map((book) => ({
+    params: { book_uri: book.uri }, // must match filename [book_uri].astro
+    props: { book },
+  }));
+}
+
+const { book_uri } = Astro.params;
+const { book } = Astro.props;
+---
+
+<LibraryLayout>
+  <Book jsonBook={book} />
+</LibraryLayout>

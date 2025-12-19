@@ -1,0 +1,20 @@
+---
+
+import LibraryLayout from "/src/layouts/LibraryLayout.astro";
+const pages = import.meta.glob("/src/pages/books/book_shelf_saga/*.md", {
+  eager: true,
+}); // returns an array of posts that live at ./src/pages/post/*.md
+const page = Object.values(pages);
+console.log(page);
+---
+<LibraryLayout>
+  <div>
+    {
+      page.map((p) => (
+        <div>
+          <a href={p.url}>{p.url.split("/").reverse()[0]}</a>
+        </div>
+      ))
+    }
+  </div>
+</LibraryLayout>

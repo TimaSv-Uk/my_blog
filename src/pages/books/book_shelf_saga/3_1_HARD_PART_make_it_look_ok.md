@@ -1,6 +1,6 @@
 TODO:
-    - make shelf look interesting
-    - make books look interesting
+    - make shelf look bearable to see
+    - make books look bearable to see
 
 
 # damn, i have no idea how to make it all(books,shelf) look good
@@ -9,7 +9,7 @@ TODO:
 ## Ok, back to the basics: What is a book? What is a bookspine? 
 # What am i tying to achive, concreatly
 
-![Book spines](../assets/dev/book_backs.jpg)
+![Book spines](/src/assets/dev/book_backs.jpg)
 
 
 ### hmmm, so far i gather that i can use  
@@ -27,7 +27,7 @@ TODO:
 
     - i can make shelf with flex like with  topBar| BookComponent bootomBat|
 ## IDEA_SH: is implemented successfully
-![Book spines](../assets/dev/IDEA_SH.png)
+![Book spines](/src/assets/dev/IDEA_SH.png)
 
 
 
@@ -47,8 +47,8 @@ now need to fix title size problem for books with large width
             ```
 
 ### styleBookFirstAttempt
-![styleBookFirstAttempt1](../assets/dev/styleBookFirstAttempt1.png)
-![styleBookFirstAttempt2](../assets/dev/styleBookFirstAttempt2.png)
+![styleBookFirstAttempt1](/src/assets/dev/styleBookFirstAttempt1.png)
+![styleBookFirstAttempt2](/src/assets/dev/styleBookFirstAttempt2.png)
 
 styleBookFirstAttempt2
 
@@ -88,17 +88,18 @@ and then i put it in div as simpe text
 ### i change font-size based on number of letters in remaining title
 ### and then limit to 6 words in title, then as breaks with ```if (charCount >= 15 && charCount - previosCharCount > 3)```
 
-![Book title](../assets/dev/title_text1.png)
+![Book title](/src/assets/dev/title_text1.png)
 
 
 # TODO: handle EXEPTION large title on small books  is overflowing
-![Book title](../assets/dev/title_text2.png)
+# TODO: handle EXEPTION in books with large size and long titles often text stats from bottom not middle of a book
+![Book title](/src/assets/dev/EXEPTION_large_book_long_title.jpg)
+
+
+![Book title](/src/assets/dev/title_text2.png)
 ### NOTE: css/html 
 
-              ```
-              <div
-                style=`
-                background: #252932;
+              ``` <div style=` background: #252932;
                 height: 80%;
                 display:flex;
                 align-items:center;

@@ -1,0 +1,9 @@
+---
+const { jsonBook } = Astro.props;
+console.log(import.meta.env.BASE_URL);
+---
+
+<h1>Book title: {jsonBook.data.doc_title}</h1>
+<h1>Book Authors: {jsonBook.data.doc_authors}</h1>
+<h1>Book data: {JSON.stringify(jsonBook)}</h1>
+<a href=`${import.meta.env.BASE_URL}/books/shelf`>Go to Shelf</a>

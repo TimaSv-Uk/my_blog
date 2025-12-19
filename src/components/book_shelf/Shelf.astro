@@ -1,6 +1,5 @@
 ---
-import Book from "./Book.astro";
-import border from "../assets/border.png";
+import BookSpine from "./BookSpine.astro";
 const { jsonBooks } = Astro.props;
 
 const bookSizeMinMax = {
@@ -18,12 +17,12 @@ const bookSizeMinMax = {
 `>
   {
     jsonBooks.map((jsonBook) => (
-      <Book jsonBook={jsonBook} bookSizeMinMax={bookSizeMinMax} />
+      <BookSpine jsonBook={jsonBook} bookSizeMinMax={bookSizeMinMax} />
     ))
   }
 </div>
 
-<script define:vars={{ jsonBooks, bookSizeMinMax, border }}>
+<script define:vars={{ jsonBooks, bookSizeMinMax }}>
   const bookCount = jsonBooks.length;
 
   function chunkArray(arr, numOfChunks) {
@@ -36,8 +35,8 @@ const bookSizeMinMax = {
     return result;
   }
 
-  function setUpShelf() {
-    const shelf = document.getElementById(`shelf`);
+  function setUpShelf(shelfID="shelf",bookSpine=".bookSpine") {
+    const shelf = document.getElementById(shelfID);
 
     const booksPerRow = Math.max(
       1,
@@ -114,12 +113,12 @@ const bookSizeMinMax = {
   }
 
   /** remove all elements from shelf exept books */
-  function removeEmptyRows() {
-    const shelf = document.getElementById("shelf");
-    const books = shelf.querySelectorAll(".book");
-    shelf.replaceChildren(...books);
+  function removeEmptyRows(shelfID="shelf",bookSpine=".bookSpine") {
+    const shelf = document.getElementById(shelfID);
+    const bookSpines = shelf.querySelectorAll(bookSpine);
+    shelf.replaceChildren(...bookSpines);
 
-    console.log(books);
+    console.log(bookSpines);
     console.log(shelf);
   }
 
@@ -135,10 +134,10 @@ const bookSizeMinMax = {
     });
   });
 
-  const books = document.querySelectorAll(`.book`);
-  books.forEach((book) => {
-    book.addEventListener("click", () => {
-      console.log(book);
-    });
-  });
+  // const bookSpines = document.querySelectorAll(`.bookSpine`);
+  // bookSpines.forEach((book) => {
+  //   book.addEventListener("click", () => {
+  //     console.log(book);
+  //   });
+  // });
 </script>

@@ -162,4 +162,4 @@ so far i use flex:wrap and it kinda works but i have no idea how to add shelf pl
 ##  i guess i will count eachBookSize (books are prerenderd) and somehow split it from there
 ### P.S. i just came up with this solution GO ME!!!!!!🪙🪙🪙🪙
 
-![A starry night sky.](../assets/dev/shelf1_0.png)
+![A starry night sky.](/src/assets/dev/shelf1_0.png)

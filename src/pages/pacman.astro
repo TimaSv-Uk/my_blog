@@ -1,0 +1,89 @@
+---
+import Layout from "../layouts/Layout.astro";
+import up_1 from "../assets/pacman-art/pacman-up/1.png";
+import up_2 from "../assets/pacman-art/pacman-up/2.png";
+import up_3 from "../assets/pacman-art/pacman-up/3.png";
+
+import down_1 from "../assets/pacman-art/pacman-down/1.png";
+import down_2 from "../assets/pacman-art/pacman-down/2.png";
+import down_3 from "../assets/pacman-art/pacman-down/3.png";
+
+import left_1 from "../assets/pacman-art/pacman-left/1.png";
+import left_2 from "../assets/pacman-art/pacman-left/2.png";
+import left_3 from "../assets/pacman-art/pacman-left/3.png";
+
+import right_1 from "../assets/pacman-art/pacman-right/1.png";
+import right_2 from "../assets/pacman-art/pacman-right/2.png";
+import right_3 from "../assets/pacman-art/pacman-right/3.png";
+
+const PACMAN_FRAMES = {
+  up: [up_1, up_2, up_3],
+  down: [down_1, down_2, down_3],
+  left: [left_1, left_2, left_3],
+  right: [right_1, right_2, right_3],
+};
+---
+
+<Layout>
+  <canvas id="pacman_canvas" width="300" height="300"> </canvas>
+</Layout>
+
+<script define:vars={{ PACMAN_FRAMES }}>
+  class Pacman {
+    movement_direction = "up";
+    frameIndex = 0;
+    frameLength = 3;
+
+    constructor() {
+      this.pacman_frames = {};
+
+      for (const direction in PACMAN_FRAMES) {
+        this.pacman_frames[direction] = PACMAN_FRAMES[direction].map((src) => {
+          const img = new Image();
+          img.src = src;
+          return img;
+        });
+      }
+    }
+  }
+  const canvas = document.getElementById("pacman_canvas");
+  const ctx = canvas.getContext("2d");
+  let frame = 0;
+  let tile_scale = 10;
+  let tile_size = [canvas.width / tile_scale, canvas.height / tile_scale];
+
+  let pacman = new Pacman();
+
+  let converted = new Image();
+  converted.src = pacman.pacman_frames[pacman.movement_direction][1].src;
+
+  console.log(converted);
+  setInterval(() => {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    window.addEventListener("keydown", (event) => {
+      const callback = {
+        ArrowLeft: (pacman.movement_direction = "left"),
+        ArrowRight: (pacman.movement_direction = "right"),
+        ArrowUp: (pacman.movement_direction = "up"),
+        ArrowDown: (pacman.movement_direction = "down"),
+      }[event.key];
+    });
+    //
+    ctx.drawImage(
+      pacman.pacman_frames[pacman.movement_direction][pacman.frameIndex],
+      tile_size[0] * 4,
+      tile_size[0] * 4,
+    );
+    pacman.frameIndex = (frame + 1) % pacman.frameLength;
+  }, 100);
+
+  // pacman-left/
+</script>
+
+<style>
+  canvas {
+    background-color: #657e97;
+    height: 100vh;
+  }
+</style>

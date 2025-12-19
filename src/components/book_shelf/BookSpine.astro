@@ -4,11 +4,10 @@ import { RNG } from "./randomNuberSeed.js";
 
 const dataDocSizeData = JSON.parse(jsonBook.data.doc_position);
 
-const book_heigth_seed = jsonBook.uri
-  .split("")
-  .reduce((a, b) => a + b.charCodeAt(0), 0);
-let book_height =
-  new RNG(book_heigth_seed).nextInt() % bookSizeMinMax.max_height;
+let book_seed = jsonBook.uri.split("").reduce((a, b) => a + b.charCodeAt(0), 0);
+book_seed = new RNG(book_seed).nextInt();
+
+let book_height = book_seed % bookSizeMinMax.max_height;
 book_height = Math.max(bookSizeMinMax.min_height, book_height);
 
 let book_width = dataDocSizeData.pagesCount / bookSizeMinMax.page_px_ratio;
@@ -25,7 +24,7 @@ const bookStyle = `
   height: ${book_height}px;
   // transform: rotate(90deg) scaleX(-1);
 `;
-let randomColor = "#" + ((Math.random() * 0xffffff) << 0).toString(16);
+let randomColor = "#" + ((book_seed * 0xffffff) << 0).toString(16);
 let bookTitle = jsonBook.data.doc_title ?? "Title";
 let filterdBookTitle = jsonBook.data.doc_title
   ? jsonBook.data.doc_title.split(" ").slice(0, 6).join(" ").trimEnd()
@@ -53,7 +52,6 @@ switch (true) {
     break;
   default:
     bookTitleFontSize = `${fontReferenceWidth / 3}px`;
-
 }
 
 // TODO: handle EXEPTION large title on small books  is overflowing
@@ -77,35 +75,49 @@ function wrapBookTitle(title) {
 filterdBookTitle = wrapBookTitle(filterdBookTitle);
 ---
 
-<div id={jsonBook.uri} class="book" style={bookStyle}>
-  <div
-    style=`
-    // background: ${randomColor};
-    height: 20%;
-    // opacity: 0.2;
-    text: #E3E7EE;
-  `
-  >
-    {bookTitle.length}
-  </div>
-  <div
-    style=`
-    background: #252932;
-    height: 80%;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-      overflow: hidden;
-  `
-  >
+<div id={jsonBook.uri} class="bookSpine" style={bookStyle}>
+  <a href=`${import.meta.env.BASE_URL}/books/${jsonBook.uri}`>
     <div
       style=`
-      text-wrap: balance;
-      transform: rotate(-90deg);
-      font-size: ${bookTitleFontSize}; 
-      align-items:center;
-      `
-      set:html={filterdBookTitle}
-    />
-  </div>
+           background: ${randomColor};
+          height: 20%;
+           opacity: 0.5;
+          text: #E3E7EE;
+        `
+    >
+    </div>
+    <div
+      style=`
+          background: #252932;
+          height: 80%;
+          display:flex;
+          align-items:center;
+          justify-content:center;
+            overflow: hidden;
+        `
+    >
+      <div
+        style=`
+                text-wrap: balance;
+                transform: rotate(-90deg);
+                font-size: ${bookTitleFontSize}; 
+                align-items:center;
+                `
+        set:html={filterdBookTitle}
+      />
+    </div>
+  </a>
 </div>
+<style>
+  .book {
+    transform-style: preserve-3d;
+    box-shadow:
+      10px 10px 0 #636363,
+      10px 10px 0 #636363;
+  }
+
+  a {
+    all: unset;
+    cursor: pointer;
+  }
+</style>
