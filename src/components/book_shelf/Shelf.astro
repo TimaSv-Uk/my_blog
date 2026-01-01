@@ -34,8 +34,31 @@ const bookSizeMinMax = {
     }
     return result;
   }
-
-  function setUpShelf(shelfID="shelf",bookSpine=".bookSpine") {
+  //TODO:  refactor: calculate number of book on shelf row that will fit on screen
+  //FIX: not working 
+  function putBooksOnShelfs(bookElemets, shelfWidth) {
+    // rowID:[books...]
+    //
+    //
+    let countSelfedBooks = 0;
+    let currentShelfRow = 0;
+    let avaliableShelfRowSpace = shelfWidth;
+    while (countSelfedBooks <= bookElemets.length) {
+      let selectedBook = bookElemets[countSelfedBooks];
+      if (avaliableShelfRowSpace < bookElemets.width) {
+        currentShelfRow++;
+        avaliableShelfRowSpace = shelfWidth;
+      }
+      avaliableShelfRowSpace -= selectedBook.width;
+      if (!shelf[`row_${currentShelfRow}`]) {
+        shelf[`row_${currentShelfRow}`] = [selectedBook];
+        continue;
+      }
+      shelf[`row_${currentShelfRow}`].push(selectedBook);
+    }
+    return shelf;
+  }
+  function setUpShelf(shelfID = "shelf", bookSpine = ".bookSpine") {
     const shelf = document.getElementById(shelfID);
 
     const booksPerRow = Math.max(
@@ -113,13 +136,13 @@ const bookSizeMinMax = {
   }
 
   /** remove all elements from shelf exept books */
-  function removeEmptyRows(shelfID="shelf",bookSpine=".bookSpine") {
+  function removeEmptyRows(shelfID = "shelf", bookSpine = ".bookSpine") {
     const shelf = document.getElementById(shelfID);
+
     const bookSpines = shelf.querySelectorAll(bookSpine);
+
     shelf.replaceChildren(...bookSpines);
 
-    console.log(bookSpines);
-    console.log(shelf);
   }
 
   window.addEventListener("DOMContentLoaded", () => {

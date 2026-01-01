@@ -1,4 +1,5 @@
 ---
+import "../styles/global.css";
 const currentUrl = Astro.url.pathname;
 ---
 
@@ -17,6 +18,12 @@ const currentUrl = Astro.url.pathname;
 </html>
 
 <style>
+	/* here i will define dememntions of elements */
+	@import "tailwindcss";
+	@theme {
+		/* --color-mint-500: oklch(0.72 0.11 178); */
+		--main-color: oklch(0.72 0.11 178);
+	}
 	html,
 	body {
 		background-color: #292f42;

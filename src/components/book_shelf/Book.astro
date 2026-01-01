@@ -1,9 +1,58 @@
 ---
 const { jsonBook } = Astro.props;
-console.log(import.meta.env.BASE_URL);
+import { getCollection } from "astro:content";
+
+const thisBookReviws = await getCollection("book_reviews", ({ data }) => {
+  return data.uri === jsonBook.uri;
+});
 ---
 
-<h1>Book title: {jsonBook.data.doc_title}</h1>
-<h1>Book Authors: {jsonBook.data.doc_authors}</h1>
-<h1>Book data: {JSON.stringify(jsonBook)}</h1>
-<a href=`${import.meta.env.BASE_URL}/books/shelf`>Go to Shelf</a>
+<!-- <h1>Book data: {JSON.stringify(jsonBook)}</h1> -->
+<a class="" href=`${import.meta.env.BASE_URL}/books/shelf`>Go to Shelf</a>
+<div class="flex flex-col items-center justify-center gap-16">
+  <div class="flex flex-col items-start justify-center">
+    <h1 class="text-2xl">Book title: {jsonBook.data.doc_title}</h1>
+    <h1 class="text-2xl">Book Authors: {jsonBook.data.doc_authors}</h1>
+  </div>
+
+  <div id="book_reviews" class="flex justify-center items-center">
+    {
+      thisBookReviws.length > 0 ? (
+        thisBookReviws.map((bookReview) => (
+          <div>
+            <div id="review_timesReadCount" class="text-4xl">
+              Times i have read this book:{" "}
+              <span class="font-bold">{bookReview.data.timesReadCount}</span>
+            </div>
+            <div id="review_rating" class="text-4xl">
+              Rating :{" "}
+              <span class="font-bold">{bookReview.data.rating}/10</span>
+            </div>
+            <div id="review_html" set:html={bookReview.rendered?.html} />
+          </div>
+        ))
+      ) : (
+        <h1 class="text-4xl">
+          Sorry, I was too lazy to write any review.😖😖😖
+        </h1>
+      )
+    }
+  </div>
+</div>
+<style lang="postcss">
+  #book_reviews {
+    h1 {
+      font-size: var(--text-3xl);
+    }
+    h2 {
+      font-size: var(--text-2xl);
+    }
+    h3,h4 {
+      font-size: var(--text-xl);
+    }
+
+    p {
+      font-size: var(--text-base);
+    }
+  }
+</style>

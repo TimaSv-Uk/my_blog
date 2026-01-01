@@ -3,7 +3,6 @@ import Shelf from "/src/components/book_shelf/Shelf.astro";
 import library from "/src/readEra_backup/library.json";
 import LibraryLayout from "/src/layouts/LibraryLayout.astro";
 
-
 function get_read_books(library_data: any) {
   return library_data.docs.filter((book) => book.data.doc_have_read_time > 0);
 }
