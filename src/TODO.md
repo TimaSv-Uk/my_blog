@@ -39,9 +39,19 @@ to make shelf look good in  assectable amount of time,
 
 Thu Jan  1 12:55:43 PM EET 2026
 TODO:
-    - calculate number of book on shelf that will fit on screen
+    + calculate number of book on shelf that will fit on screen
     + come up with design guidelines
 I desided to use **Tailwind** design guidelines (i quess ,i was too lazy to chose all sizes and proportions) 
 ![book_info_and_review_2_0.](/src/assets/dev/book_info_and_review_2_0.png)
 Started, first task but ,-Oh no- they turned off my elecric powerrrr 
 
+##### Yay, i made it. The only problem margins not included in shelfRowWidth so 
+i have to add marginRight 150px and on phones it limits number of books in row.
+Thou no spilled books that come over shelf
+
+
+![book_info_and_review__fail1](/src/assets/dev/book_info_and_review.png)
+![book_info_and_review__fail2](/src/assets/dev/book_info_and_review.png)
+![book_info_and_review__fail3](/src/assets/dev/book_info_and_review.png)
+![book_info_and_review__fail4](/src/assets/dev/book_info_and_review.png)
+![book_info_and_review_3_0](/src/assets/dev/book_info_and_review_3_0.png)

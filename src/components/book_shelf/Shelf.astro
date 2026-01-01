@@ -11,10 +11,11 @@ const bookSizeMinMax = {
 };
 ---
 
-<div id="shelf" class="shelf-container" style=`
-    display: none;
-
-`>
+<div
+  id="shelf"
+  class="shelf-container"
+  style="display: flex; flex-wrap: wrap; gap: 0.1rem; width: 85%; align-items:flex-end;"
+>
   {
     jsonBooks.map((jsonBook) => (
       <BookSpine jsonBook={jsonBook} bookSizeMinMax={bookSizeMinMax} />
@@ -34,22 +35,31 @@ const bookSizeMinMax = {
     }
     return result;
   }
-  //TODO:  refactor: calculate number of book on shelf row that will fit on screen
-  //FIX: not working 
-  function putBooksOnShelfs(bookElemets, shelfWidth) {
-    // rowID:[books...]
-    //
-    //
+  /**
+   * Organizes book elements into rows based on the available shelf width.
+   * * @param {HTMLElement[]} bookElemets - An array of DOM elements representing books.
+   * @param {number} shelfWidth - The total horizontal pixels available per row.
+   * @returns {Object.<string, HTMLElement[]>} An object where keys are row IDs (e.g., 'row_0')
+   * and values are arrays of book elements in 그 row.
+   * rowID:[books...]
+   */
+  function putBooksOnShelfs(bookElemets, shelfWidth, marginRight = 150) {
+    let shelf = {};
     let countSelfedBooks = 0;
     let currentShelfRow = 0;
-    let avaliableShelfRowSpace = shelfWidth;
-    while (countSelfedBooks <= bookElemets.length) {
+    // NOTE: without some book will spill over the shelf
+    let maxShelfRowSpace = shelfWidth - marginRight;
+    let avaliableShelfRowSpace = maxShelfRowSpace;
+    while (countSelfedBooks < bookElemets.length) {
       let selectedBook = bookElemets[countSelfedBooks];
-      if (avaliableShelfRowSpace < bookElemets.width) {
+      const bookWidth = selectedBook.getBoundingClientRect().width;
+      if (avaliableShelfRowSpace < bookWidth) {
         currentShelfRow++;
-        avaliableShelfRowSpace = shelfWidth;
+        avaliableShelfRowSpace = maxShelfRowSpace;
       }
-      avaliableShelfRowSpace -= selectedBook.width;
+      avaliableShelfRowSpace -= bookWidth;
+      countSelfedBooks++;
+
       if (!shelf[`row_${currentShelfRow}`]) {
         shelf[`row_${currentShelfRow}`] = [selectedBook];
         continue;
@@ -60,79 +70,63 @@ const bookSizeMinMax = {
   }
   function setUpShelf(shelfID = "shelf", bookSpine = ".bookSpine") {
     const shelf = document.getElementById(shelfID);
-
-    const booksPerRow = Math.max(
-      1,
-
-      Math.floor(
-        (bookCount * bookSizeMinMax.max_width) /
-          Math.max(bookSizeMinMax.max_width, window.innerWidth),
-      ),
-    );
-
-    let bookRows = chunkArray(jsonBooks, booksPerRow);
-
-    for (let row = 0; bookRows.length > row; row++) {
-      let bookRow = bookRows[row];
-      let shelfRow = document.getElementById(`${row}_row`);
+    const bookSpines = shelf.querySelectorAll(bookSpine);
+    let bookRows = putBooksOnShelfs(bookSpines, shelf.clientWidth);
+    console.log(bookRows);
+    for (let bookRow in bookRows) {
+      let booksInRow = bookRows[bookRow];
+      let shelfRow = document.getElementById(`${bookRow}`);
       if (shelfRow == null) {
         shelfRow = document.createElement("div");
-        shelfRow.id = `${row}_row`;
+        shelfRow.id = `${bookRow}`;
         shelfRow.className = `shelfRow`;
-      }
-      // console.log(border.src);
-      shelfRow.style = `
-        border: 10px solid #D4D9E4; 
-        display: flex;
-        flex-direction: column;
-        width: 90%;
-        align-items:center;
-        margin: auto, auto;
+        shelfRow.style = `
+          border: 10px solid #d4d9e4;
+          display: flex;
+          flex-direction: column;
+          width: 90%;
+          align-items: center;
+          margin: auto, auto;
         `;
+      }
 
-      // TODO:
-      //  make shelf with flex like with  topBar| BookComponent bootomBat|
       const rowOfBooks = document.createElement("div");
+      rowOfBooks.className = `rowOfBooks`;
       rowOfBooks.style = `
         display: flex;
-        gap: 0.1rem;     
+        gap: 0.1rem;
         width: 90%;
-        align-items:flex-end;
+        align-items: flex-end;
         margin: auto, auto;
-        padding-top: 0.5rem
-        `;
+        padding-top: 0.5rem;
+      `;
       const topShelfBar = document.createElement("div");
-      const bottomShelfBar = document.createElement("div");
+      topShelfBar.className = `topShelfBar`;
+
       topShelfBar.style = `
           background-color: #DD3E65;
           width: 100%;
           height: 20px;
         `;
+      const bottomShelfBar = document.createElement("div");
+
       bottomShelfBar.style = `
           background-color: #DD3E65;
           width: 100%;
           height: 20px;
         `;
+      bottomShelfBar.className = `bottomShelfBar`;
       shelfRow.appendChild(topShelfBar);
-      for (let bookIndex = 0; bookRow.length > bookIndex; bookIndex++) {
-        let book = bookRow[bookIndex];
-        const renderedBook = document.getElementById(`${book.uri}`);
-        rowOfBooks.appendChild(renderedBook);
-      }
-
+      booksInRow.forEach((book) => {
+        rowOfBooks.appendChild(book);
+      });
       shelfRow.appendChild(rowOfBooks);
       shelfRow.appendChild(bottomShelfBar);
 
       shelf.appendChild(shelfRow);
     }
-    shelf.style = `
-        display: flex;
-        flex-wrap: wrap;
-        gap: 0.1rem;     
-        width: 85%;
-        align-items:flex-end;
-
-      `;
+    shelf.classList.add("loaded");
+    shelf.classList.remove("hidden");
   }
 
   /** remove all elements from shelf exept books */
@@ -140,9 +134,7 @@ const bookSizeMinMax = {
     const shelf = document.getElementById(shelfID);
 
     const bookSpines = shelf.querySelectorAll(bookSpine);
-
     shelf.replaceChildren(...bookSpines);
-
   }
 
   window.addEventListener("DOMContentLoaded", () => {
@@ -156,11 +148,17 @@ const bookSizeMinMax = {
       setUpShelf();
     });
   });
-
-  // const bookSpines = document.querySelectorAll(`.bookSpine`);
-  // bookSpines.forEach((book) => {
-  //   book.addEventListener("click", () => {
-  //     console.log(book);
-  //   });
-  // });
 </script>
+<style>
+  /* Base state: Hidden but takes up space (allows width calculation) */
+  .shelf-container {
+    visibility: hidden;
+    opacity: 0;
+  }
+
+  /* Active state: Visible */
+  .shelf-container.loaded {
+    visibility: visible;
+    opacity: 1;
+  }
+</style>
