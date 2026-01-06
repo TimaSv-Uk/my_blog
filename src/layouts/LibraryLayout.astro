@@ -1,5 +1,6 @@
 ---
 import "../styles/global.css";
+import Navbar from "./Library/Navbar.astro";
 const currentUrl = Astro.url.pathname;
 ---
 
@@ -13,7 +14,10 @@ const currentUrl = Astro.url.pathname;
 		<title>My Library</title>
 	</head>
 	<body>
-		<slot />
+		<div class="flex flex-col items-center">
+			<Navbar />
+			<slot />
+		</div>
 	</body>
 </html>
 

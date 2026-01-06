@@ -64,6 +64,7 @@ Tue Jan  6 04:01:50 PM EET 2026
 TODO:
     + add sort books by date (see what books i read in what year)
     + add sort by category  from app (dnf one of most imoportant)
+    + add simple navbar
 
 ![book_stats_prototype](/src/assets/dev/book_stats_prototype.png)
 #### It looks ugly but i'm only geting stared with stats, thou i see how poorly i orginezed categorys in ReadEra

@@ -14,7 +14,7 @@ const bookSizeMinMax = {
 <div
   id="shelf"
   class="shelf-container"
-  style="display: flex; flex-wrap: wrap; gap: 0.1rem; width: 85%; align-items:flex-end;"
+  style="display: flex; flex-wrap: wrap; gap: 0.1rem; width: 85%; align-items:center; justify-content: center;"
 >
   {
     jsonBooks.map((jsonBook) => (
@@ -95,7 +95,6 @@ const bookSizeMinMax = {
       rowOfBooks.style = `
         display: flex;
         gap: 0.1rem;
-        width: 90%;
         align-items: flex-end;
         margin: auto, auto;
         padding-top: 0.5rem;
