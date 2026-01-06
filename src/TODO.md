@@ -9,6 +9,8 @@
 
             custom_spesial_effects for personal_favorite_books,
                 and dont fucking dear to forget to write proper revievs
+    - add sort books by date (see what books i read in what year)
+    - add sort by category  from app (dnf one of most imoportant)
 
 ### MAYBE
     - add page with dnf books
@@ -55,3 +57,13 @@ Thou no spilled books that come over shelf
 ![book_info_and_review__fail3](/src/assets/dev/book_info_and_review.png)
 ![book_info_and_review__fail4](/src/assets/dev/book_info_and_review.png)
 ![book_info_and_review_3_0](/src/assets/dev/book_info_and_review_3_0.png)
+
+
+
+Tue Jan  6 04:01:50 PM EET 2026
+TODO:
+    + add sort books by date (see what books i read in what year)
+    + add sort by category  from app (dnf one of most imoportant)
+
+![book_stats_prototype](/src/assets/dev/book_stats_prototype.png)
+#### It looks ugly but i'm only geting stared with stats, thou i see how poorly i orginezed categorys in ReadEra
