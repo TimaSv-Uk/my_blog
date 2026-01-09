@@ -1,0 +1,160 @@
+---
+import Shelf from "/src/components/book_shelf/Shelf.astro";
+import library from "/src/readEra_backup/library.json";
+import LibraryLayout from "/src/layouts/LibraryLayout.astro";
+
+function get_read_books(library_data: any) {
+  return library_data.docs.filter((book) => book.data.doc_have_read_time > 0);
+}
+
+let readBooks = get_read_books(library);
+readBooks = readBooks.sort(
+  (a, b) => b["data"]["doc_have_read_time"] - a["data"]["doc_have_read_time"],
+);
+console.log(readBooks);
+
+/**
+ * Aggregates a list of read books by year and month.
+ * * @param {Array<Object>} readBooks - An array of book objects.
+ * @param {Object} readBooks[].data - The metadata container for the book.
+ * @param {number|string} readBooks[].data.doc_have_read_time - A timestamp or date string representing when the book was read.
+ * @returns {Object.<string, Object.<string, number>>} An object structured as { "YYYY": { "MM": count(1-12) } }.
+ */
+function countByYear(readBooks) {
+  let countedBooks = {};
+  for (let i = 0; i < readBooks.length; i++) {
+    let date = new Date(readBooks[i]["data"]["doc_have_read_time"]);
+    const year = date.getFullYear();
+
+    const month = date.getMonth() + 1; // getMonth() is zero-indexed (0-11)
+
+    if (!countedBooks[`${year}`]) {
+      countedBooks[`${year}`] = {};
+    }
+    if (!countedBooks[`${year}`][`${month}`]) {
+      countedBooks[`${year}`][`${month}`] = 1;
+      continue;
+    }
+    countedBooks[`${year}`][`${month}`]++;
+  }
+  return countedBooks;
+}
+
+// {
+//   uri: '69f6ba06-468e-44d8-a0ee-bf6ae58c5a1d',
+//   data: {
+//     coll_title: 'Philosophy',
+//     coll_child: 0,
+//     doc_active_count: 3,
+//     coll_active_time: 1739469639925,
+//     coll_modified_time: 1739469640
+//   },
+//   docs: [
+//     'sha-1:28ecc2894c4e3bc8eaceb9a8dede5395e38cf49a',
+//     'sha-1:4a72de675e383820034bee164ffcbc336961ca1d',
+//     'sha-1:b9406e6e608b91254a52ff77a2ea7de7ff905562'
+//   ]
+// },
+let categorys = library["colls"];
+console.log(categorys);
+
+// TODO:
+//add sort books by date (see what books i read in what year)
+//add sort by category  from app (dnf one of most imoportant)
+---
+
+<script define:vars={{ categorys, readBooks }}>
+  Object.entries(categorys).map((value) => {
+    const { uri, data, docs } = value[1];
+    const foundBooks = readBooks.find((book) => docs.includes(book.uri));
+    console.log(foundBooks);
+  });
+</script>
+<LibraryLayout>
+  <div>
+    <div>
+      Disclamer those stast may be incorect (speatialy in at first years),in
+      addition almost all categorys are messed up
+    </div>
+    <br />
+    <div class="flex flex-row gap-20">
+      <div>
+        {
+          Object.entries(countByYear(readBooks)).map(([year, months]) => (
+            <div id={year}>
+              <h3 class="text-xl">Year: {year}</h3>
+              <h3 class="text-xl">
+                Year Book count:{" "}
+                {Object.values(months).reduce(
+                  (total, month_count) => total + month_count,
+                  0,
+                )}
+              </h3>
+
+              {Object.entries(months).map(([month, count]) => (
+                <div id={month}>
+                  &nbsp;&nbsp;&nbsp;&nbsp;Month {month}: {count} books
+                </div>
+              ))}
+            </div>
+          ))
+        }
+      </div>
+
+      <div>
+        {/* 1. RENDER ALL CATEGORIES EXCEPT DNF */}
+        <div class="categories-list">
+          {
+            Object.entries(categorys)
+              .filter(([_, value]) => value.data["coll_title"] !== "Dnf")
+              .map(([id, value]) => {
+                const { uri, data, docs } = value;
+                const foundBooks = readBooks.filter((book) =>
+                  docs.includes(book.uri),
+                );
+
+                return (
+                  <div id={uri} id={uri} class="category-item">
+                    <div>Title: {data["coll_title"]}</div>
+                    <div>Book count: {foundBooks.length}</div>
+                  </div>
+                );
+              })
+          }
+        </div>
+
+        <hr />
+
+        {/* 2. RENDER ONLY THE DNF CATEGORY */}
+        <div class="dnf-section">
+          {
+            Object.entries(categorys)
+              .filter(([_, value]) => value.data["coll_title"] === "Dnf")
+              .map(([id, value]) => {
+                const { uri, data, docs } = value;
+                // Looking in library.docs for DNF
+                const foundBooks = library.docs.filter((book) =>
+                  docs.includes(book.uri),
+                );
+
+                return (
+                  <div id={uri} id={uri} class="dnf-container">
+                    <h3>Special Category: {data["coll_title"]}</h3>
+                    <strong>Book count: {foundBooks.length}</strong>
+
+                    <div class="book-list">
+                      {foundBooks.map((foundBook) => (
+                        <div id={foundBook.uri} style={{ marginLeft: "20px" }}>
+                          Book title: {foundBook.data?.doc_title || "Untitled"}
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                );
+              })
+          }
+        </div>
+      </div>
+    </div>
+  </div>
+</LibraryLayout>
