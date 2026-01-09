@@ -68,3 +68,12 @@ TODO:
 
 ![book_stats_prototype](/src/assets/dev/book_stats_prototype.png)
 #### It looks ugly but i'm only geting stared with stats, thou i see how poorly i orginezed categorys in ReadEra
+
+
+
+Fri Jan  9 01:30:49 PM EET 2026
+TODO:
+    - idea to make title of books cleaner on Spines: filter all in "()" words, filter all after ":"
+
+
+

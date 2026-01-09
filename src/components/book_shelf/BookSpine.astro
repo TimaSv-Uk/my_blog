@@ -26,8 +26,29 @@ const bookStyle = `
 `;
 let randomColor = "#" + ((book_seed * 0xffffff) << 0).toString(16);
 let bookTitle = jsonBook.data.doc_title ?? "Title";
-let filterdBookTitle = jsonBook.data.doc_title
-  ? jsonBook.data.doc_title.split(" ").slice(0, 6).join(" ").trimEnd()
+//NOTE:
+// title of books cleaner on Spines: filter all in "()" words, filter all after ":"
+function removeParentheses(text) {
+  let result = "";
+  let depth = 0;
+
+  for (let char of text) {
+    if (char === "(") {
+      depth++; // Enter a parenthesis, start ignoring text
+    } else if (char === ")" && depth > 0) {
+      depth--; // Exit a parenthesis
+    } else if (depth === 0) {
+      result += char; // Only add text if we are not inside parentheses
+    }
+  }
+
+  return result.trim();
+}
+bookTitle = bookTitle.split(":")[0];
+bookTitle = removeParentheses(bookTitle);
+
+let filterdBookTitle = bookTitle
+  ? bookTitle.split(" ").slice(0, 6).join(" ").trimEnd()
   : "TITLE";
 
 let fontReferenceWidth =
@@ -79,9 +100,9 @@ filterdBookTitle = wrapBookTitle(filterdBookTitle);
   <a href=`${import.meta.env.BASE_URL}/books/${jsonBook.uri}`>
     <div
       style=`
-           background: ${randomColor};
+          background: ${randomColor};
           height: 20%;
-           opacity: 0.5;
+          opacity: 0.5;
           text: #E3E7EE;
         `
     >
@@ -93,7 +114,7 @@ filterdBookTitle = wrapBookTitle(filterdBookTitle);
           display:flex;
           align-items:center;
           justify-content:center;
-            overflow: hidden;
+          overflow: hidden;
         `
     >
       <div
