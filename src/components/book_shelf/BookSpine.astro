@@ -57,16 +57,16 @@ let fontReferenceWidth =
 let bookTitleFontSize = `${fontReferenceWidth}px`;
 switch (true) {
   case bookTitle.length > 60:
-    bookTitleFontSize = `${fontReferenceWidth / 6}px`;
+    bookTitleFontSize = `${fontReferenceWidth / 8}px`;
     break;
   case bookTitle.length > 50:
-    bookTitleFontSize = `${fontReferenceWidth / 5}px`;
+    bookTitleFontSize = `${fontReferenceWidth / 6.5}px`;
     break;
   case bookTitle.length > 25:
-    bookTitleFontSize = `${fontReferenceWidth / 4.5}px`;
+    bookTitleFontSize = `${fontReferenceWidth / 5.5}px`;
     break;
   case bookTitle.length > 15:
-    bookTitleFontSize = `${fontReferenceWidth / 4}px`;
+    bookTitleFontSize = `${fontReferenceWidth / 4.5}px`;
     break;
   case bookTitle.length > 10:
     bookTitleFontSize = `${fontReferenceWidth / 3.5}px`;
@@ -83,7 +83,7 @@ function wrapBookTitle(title) {
   title = title.trimEnd();
   title = title.split(" ");
   let charCount = 0;
-  for (let i = 0; i < title.length; i += 1) {
+  for (let i = 0; i < title.length; i += 2) {
     let previosCharCount = charCount;
     charCount += title[i].length;
 
