@@ -74,6 +74,9 @@ TODO:
 Fri Jan  9 01:30:49 PM EET 2026
 TODO:
     - idea to make title of books cleaner on Spines: filter all in "()" words, filter all after ":"
+Mutch better, now almost no title is overflowing theonly onses 
+that caus ptoblems are like this "Jim Butcher - Dresden 04" 
+{Series name/or Author} - {title}
 
 
 
