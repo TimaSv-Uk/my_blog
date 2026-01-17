@@ -141,4 +141,36 @@ filterdBookTitle = wrapBookTitle(filterdBookTitle);
     all: unset;
     cursor: pointer;
   }
+
+
+
+  .bookSpine{
+    /* The Spine Color & 3D Gradient */
+    background-color: var(--randomColor);
+    background-image: linear-gradient(
+      90deg, 
+      rgba(255,255,255,0.2) 0%, 
+      rgba(255,255,255,0) 20%, 
+      rgba(0,0,0,0.1) 80%, 
+      rgba(0,0,0,0.4) 100%);
+    
+    /* Soft rounded spine edge */
+    border-radius: 4px 2px 2px 4px;
+    
+    /* Shadow for depth */
+    box-shadow: 
+      inset 2px 0 5px rgba(255,255,255,0.3), /* Highlight left */
+      inset -2px 0 5px rgba(0,0,0,0.3),      /* Shadow right */
+      5px 5px 10px rgba(0,0,0,0.3);          /* Drop shadow */
+      
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+  /* Hover Effect: Pull book out */
+  .bookSpine:hover {
+    transform: translateY(-10px) translateX(-5px);
+    box-shadow: 
+      inset 2px 0 5px rgba(255,255,255,0.3),
+      10px 15px 20px rgba(0,0,0,0.4);
+  }
+
 </style>

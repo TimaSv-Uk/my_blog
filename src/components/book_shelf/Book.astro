@@ -5,6 +5,10 @@ import { getCollection } from "astro:content";
 const thisBookReviws = await getCollection("book_reviews", ({ data }) => {
   return data.uri === jsonBook.uri;
 });
+console.log(jsonBook.data)
+
+const redable_doc_have_read_time = new Date(jsonBook.data.doc_have_read_time).toLocaleString();
+
 ---
 
 <!-- <h1>Book data: {JSON.stringify(jsonBook)}</h1> -->
@@ -13,6 +17,7 @@ const thisBookReviws = await getCollection("book_reviews", ({ data }) => {
   <div class="flex flex-col items-start justify-center">
     <h1 class="text-2xl">Book title: {jsonBook.data.doc_title}</h1>
     <h1 class="text-2xl">Book Authors: {jsonBook.data.doc_authors}</h1>
+    <h1 class="text-2xl">Finished this book: {redable_doc_have_read_time}</h1>
   </div>
 
   <div id="book_reviews" class="flex justify-center items-center">
