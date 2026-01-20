@@ -1,7 +1,4 @@
 
----
-layout: /src/layouts/LibraryLayout.astro
----
 TODO:
     - make shelf look interesting
     - make books look interesting

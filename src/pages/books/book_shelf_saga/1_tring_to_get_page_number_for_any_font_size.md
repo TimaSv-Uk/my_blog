@@ -1,6 +1,3 @@
----
-layout: /src/layouts/LibraryLayout.astro
----
 # my goal is to get relatively normal(like in printed books about 1800 words per page)
 # page count for my books
 

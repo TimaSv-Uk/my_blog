@@ -14,6 +14,17 @@ let book_width = dataDocSizeData.pagesCount / bookSizeMinMax.page_px_ratio;
 book_width = Math.max(bookSizeMinMax.min_width, book_width);
 book_width = Math.min(bookSizeMinMax.max_width, book_width);
 
+
+// Random Letter Spacing (between -0.1em and 0.05em)
+const letterSpacing = (Math.random() * (0.05 - (-0.1)) + (-0.1)).toFixed(3);
+
+// Random Font Selection
+const fonts = ["serif", "sans-serif", "monospace", "system-ui"];
+const randomFont = fonts[book_seed % fonts.length];
+
+const title_font_weight = Math.max(book_seed % 900, 300);
+
+
 const isFavorite = jsonBook.data.doc_favorites_time > 0;
 const bookStyle = `
   background: #3E4B5B;
@@ -25,6 +36,7 @@ const bookStyle = `
   // transform: rotate(90deg) scaleX(-1);
 `;
 let randomColor = "#" + ((book_seed * 0xffffff) << 0).toString(16);
+
 let bookTitle = jsonBook.data.doc_title ?? "Title";
 //NOTE:
 // title of books cleaner on Spines: filter all in "()" words, filter all after ":"
@@ -56,11 +68,8 @@ let fontReferenceWidth =
 
 let bookTitleFontSize = `${fontReferenceWidth}px`;
 switch (true) {
-  case bookTitle.length > 60:
-    bookTitleFontSize = `${fontReferenceWidth / 8}px`;
-    break;
-  case bookTitle.length > 50:
-    bookTitleFontSize = `${fontReferenceWidth / 6.5}px`;
+  case bookTitle.length > 40:
+    bookTitleFontSize = `${fontReferenceWidth / 5.5}px`;
     break;
   case bookTitle.length > 25:
     bookTitleFontSize = `${fontReferenceWidth / 5.5}px`;
@@ -94,6 +103,26 @@ function wrapBookTitle(title) {
   return title.join(" ");
 }
 filterdBookTitle = wrapBookTitle(filterdBookTitle);
+
+function glueArticles(text) {
+  // List of words that should never sit at the end of a line
+  const articles = ["of", "the", "a", "an", "and", "in", "on", "with", "for", "by"];
+  
+  let words = text.split(" ");
+  
+  for (let i = 0; i < words.length - 1; i++) {
+    // If the current word is in our list, swap the space after it for a non-breaking space
+    if (articles.includes(words[i].toLowerCase())) {
+      words[i] = words[i] + "\u00A0"; 
+      words[i] = words[i] + words[i + 1];
+      words.splice(i + 1, 1);
+    }
+  }
+  return words.join(" ");
+}
+
+// Apply it to your title
+filterdBookTitle = glueArticles(filterdBookTitle);
 ---
 
 <div id={jsonBook.uri} class="bookSpine" style={bookStyle}>
@@ -117,15 +146,18 @@ filterdBookTitle = wrapBookTitle(filterdBookTitle);
           overflow: hidden;
         `
     >
-      <div
-        style=`
-                text-wrap: balance;
-                transform: rotate(-90deg);
-                font-size: ${bookTitleFontSize}; 
-                align-items:center;
-                `
-        set:html={filterdBookTitle}
-      />
+        <div
+          style=`
+            text-wrap: pretty;
+            font-weight: ${title_font_weight};
+            letter-spacing: ${letterSpacing}em; 
+            font-family: ${randomFont};
+            transform: rotate(-90deg);
+            font-size: ${bookTitleFontSize}; 
+            align-items: center;
+          `
+          set:html={filterdBookTitle}
+        />
     </div>
   </a>
 </div>
