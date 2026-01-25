@@ -14,6 +14,11 @@ let book_width = dataDocSizeData.pagesCount / bookSizeMinMax.page_px_ratio;
 book_width = Math.max(bookSizeMinMax.min_width, book_width);
 book_width = Math.min(bookSizeMinMax.max_width, book_width);
 
+const roll = Math.floor(Math.random() * 10) + 1;
+if (roll === 1) {
+  //console.log("1 out of 10 hit!");
+  book_width /= 0.8;
+}
 
 // Random Letter Spacing (between -0.1em and 0.05em)
 const letterSpacing = (Math.random() * (0.05 - (-0.1)) + (-0.1)).toFixed(3);
@@ -22,7 +27,7 @@ const letterSpacing = (Math.random() * (0.05 - (-0.1)) + (-0.1)).toFixed(3);
 const fonts = ["serif", "sans-serif", "monospace", "system-ui"];
 const randomFont = fonts[book_seed % fonts.length];
 
-const title_font_weight = Math.max(book_seed % 900, 300);
+const title_font_weight = Math.max(book_seed % 1200, 800);
 
 
 const isFavorite = jsonBook.data.doc_favorites_time > 0;
@@ -75,13 +80,13 @@ switch (true) {
     bookTitleFontSize = `${fontReferenceWidth / 5.5}px`;
     break;
   case bookTitle.length > 15:
-    bookTitleFontSize = `${fontReferenceWidth / 4.5}px`;
+    bookTitleFontSize = `${fontReferenceWidth / 4}px`;
     break;
   case bookTitle.length > 10:
-    bookTitleFontSize = `${fontReferenceWidth / 3.5}px`;
+    bookTitleFontSize = `${fontReferenceWidth / 3}px`;
     break;
   default:
-    bookTitleFontSize = `${fontReferenceWidth / 3}px`;
+  bookTitleFontSize = `${fontReferenceWidth / 2.5}px`;
 }
 
 // TODO: handle EXEPTION large title on small books  is overflowing
@@ -185,9 +190,6 @@ filterdBookTitle = glueArticles(filterdBookTitle);
       rgba(255,255,255,0) 20%, 
       rgba(0,0,0,0.1) 80%, 
       rgba(0,0,0,0.4) 100%);
-    
-    /* Soft rounded spine edge */
-    border-radius: 4px 2px 2px 4px;
     
     /* Shadow for depth */
     box-shadow: 

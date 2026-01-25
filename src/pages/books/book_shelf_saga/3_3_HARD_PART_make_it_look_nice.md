@@ -2,7 +2,7 @@ Tue Jan 20 04:52:17 PM EET 2026
 TODO:
     - make shelf look interesting
     - make books look interesting
-#### Today, I added random letter_spacing, font_weigt and font_family
+#### Today, I added random letter_spacing, font_weigt and font_family to BookSpine
 
 
 I'm realy stagnating at this point. I made some statistics(date,category) about books i've read

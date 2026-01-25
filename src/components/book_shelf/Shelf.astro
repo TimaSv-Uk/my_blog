@@ -6,8 +6,8 @@ const bookSizeMinMax = {
   page_px_ratio: 20,
   min_height: 170,
   max_height: 200,
-  min_width: 60,
-  max_width: 150,
+  min_width: 50,
+  max_width: 90,
 };
 ---
 
@@ -43,7 +43,7 @@ const bookSizeMinMax = {
    * and values are arrays of book elements in 그 row.
    * rowID:[books...]
    */
-  function putBooksOnShelfs(bookElemets, shelfWidth, marginRight = 150) {
+  function putBooksOnShelfs(bookElemets, shelfWidth, marginRight = 130) {
     let shelf = {};
     let countSelfedBooks = 0;
     let currentShelfRow = 0;
@@ -81,12 +81,13 @@ const bookSizeMinMax = {
         shelfRow.id = `${bookRow}`;
         shelfRow.className = `shelfRow`;
         shelfRow.style = `
-          border: 10px solid #d4d9e4;
+         // border: 10px solid #d4d9e4;
           display: flex;
           flex-direction: column;
           width: 90%;
           align-items: center;
           margin: auto, auto;
+
         `;
       }
 
@@ -94,28 +95,39 @@ const bookSizeMinMax = {
       rowOfBooks.className = `rowOfBooks`;
       rowOfBooks.style = `
         display: flex;
-        gap: 0.1rem;
+        gap: 0.01rem;
         align-items: flex-end;
         margin: auto, auto;
         padding-top: 0.5rem;
       `;
-      const topShelfBar = document.createElement("div");
-      topShelfBar.className = `topShelfBar`;
+   //  const topShelfBar = document.createElement("div");
+   //  topShelfBar.className = `topShelfBar`;
 
-      topShelfBar.style = `
-          background-color: #DD3E65;
-          width: 100%;
-          height: 20px;
-        `;
+   //  topShelfBar.style = `
+   //      background-color: #DD3E65;
+   //      width: 100%;
+   //      height: 20px;
+   //      margin-bottom: 40px;
+   //     `;
       const bottomShelfBar = document.createElement("div");
 
       bottomShelfBar.style = `
-          background-color: #DD3E65;
+          background: #40C0CB;
           width: 100%;
           height: 20px;
+          --c: 75px; /* control the curvature (works with percentage) */
+          height: 100px;
+          aspect-ratio: 3/2;
+          /* you can also update the 60%  */
+          mask: radial-gradient(
+            60% var(--c) at bottom,
+            transparent calc(100% - 4px),
+            #000 100%
+          );
+          filter: drop-shadow(0 8px 20px rgba(0,0,0,0.4));
         `;
       bottomShelfBar.className = `bottomShelfBar`;
-      shelfRow.appendChild(topShelfBar);
+     // shelfRow.appendChild(topShelfBar);
       booksInRow.forEach((book) => {
         rowOfBooks.appendChild(book);
       });
