@@ -1,0 +1,473 @@
+<!-- //WARNING: vibe coded -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart Palette & Scale Generator</title>
+    <style>
+        :root {
+            --primary: #007bff;
+            --bg: #f8f9fa;
+            --card-bg: #ffffff;
+            --text: #333;
+        }
+
+        body {
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            padding: 20px;
+            background-color: var(--bg);
+            color: var(--text);
+            text-align: center;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        /* --- Layout --- */
+        .container {
+            display: flex;
+            flex-direction: column;
+            gap: 30px;
+        }
+
+        /* Controls Area */
+        .controls {
+            background: var(--card-bg);
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            max-width: 600px;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .setting-group {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid #eee;
+        }
+
+        .setting-group:last-child { border-bottom: none; }
+
+        input[type="range"] { flex-grow: 1; margin: 0 15px; }
+
+        button#regen-btn {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 12px;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        button#regen-btn:hover { background: #0056b3; }
+
+        /* Preview */
+        #image-preview {
+            max-width: 100%;
+            height: auto;
+            max-height: 300px;
+            border-radius: 8px;
+            display: none;
+            margin: 0 auto;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+
+        /* --- Main Palette Grid --- */
+        .palette-section { margin-top: 20px; }
+        
+        .palette-grid {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 15px;
+        }
+
+        .swatch {
+            width: 110px;
+            background: var(--card-bg);
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.08);
+            transition: transform 0.2s;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .swatch:hover { transform: translateY(-5px); }
+
+        .swatch-color {
+            height: 80px;
+            width: 100%;
+            cursor: pointer;
+        }
+
+        .swatch-info {
+            padding: 8px;
+            font-size: 0.85rem;
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .hex-code { font-family: monospace; font-weight: bold; cursor: pointer; }
+
+        .scale-btn {
+            background: transparent;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 10px;
+            padding: 4px;
+            cursor: pointer;
+            color: #555;
+        }
+        .scale-btn:hover { background: #eee; color: #000; }
+
+        /* --- Generated Scale Section --- */
+        #scale-container {
+            display: none; /* Hidden by default */
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            margin-top: 40px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        .scale-row {
+            display: flex;
+            height: 120px;
+            border-radius: 8px;
+            overflow: hidden;
+            margin-top: 20px;
+        }
+
+        .scale-step {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            align-items: center;
+            padding-bottom: 10px;
+            font-size: 12px;
+            font-weight: bold;
+            color: white;
+            text-shadow: 0 1px 2px rgba(0,0,0,0.3);
+            cursor: pointer;
+            transition: flex 0.2s;
+        }
+        
+        /* Make text dark on light colors */
+        .scale-step.light-text { color: #333; text-shadow: none; }
+        
+        .scale-step:hover { flex: 1.5; }
+
+        .scale-label { opacity: 0.8; font-size: 10px; margin-bottom: 2px; }
+
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>🎨 Smart Palette & Scale Generator</h2>
+
+    <div class="controls">
+        <input type="file" id="image-input" accept="image/*">
+        
+        <div class="setting-group">
+            <label>Max Colors: <span id="limit-val">10</span></label>
+            <input type="range" id="limit-input" value="10" min="4" max="30">
+        </div>
+
+        <div class="setting-group">
+            <label>Similarity: <span id="threshold-val">60</span></label>
+            <input type="range" id="threshold-input" value="60" min="10" max="150">
+        </div>
+
+        <button id="regen-btn">Regenerate Extracted Colors</button>
+        <p id="status" style="font-size: 0.9rem; color: #666;">Upload an image to start.</p>
+    </div>
+
+    <img id="image-preview" alt="Preview">
+    <canvas id="canvas" style="display:none;"></canvas>
+
+    <div class="palette-section">
+        <h3>Extracted Colors</h3>
+        <p style="font-size:0.9rem; color:#666;">Click "Make Scale" on any color to fill in the gaps.</p>
+        <div id="palette" class="palette-grid"></div>
+    </div>
+
+    <div id="scale-container">
+        <h3 id="scale-title">Generated 9-Step Scale</h3>
+        <p>Base: <span id="base-color-display"></span></p>
+        <div id="scale-row" class="scale-row"></div>
+    </div>
+</div>
+
+<script>
+    // --- Elements ---
+    const imageInput = document.getElementById('image-input');
+    const preview = document.getElementById('image-preview');
+    const canvas = document.getElementById('canvas');
+    const ctx = canvas.getContext('2d');
+    const paletteContainer = document.getElementById('palette');
+    const statusMsg = document.getElementById('status');
+    const limitInput = document.getElementById('limit-input');
+    const thresholdInput = document.getElementById('threshold-input');
+    const regenBtn = document.getElementById('regen-btn');
+    
+    // Scale Elements
+    const scaleContainer = document.getElementById('scale-container');
+    const scaleRow = document.getElementById('scale-row');
+    const baseColorDisplay = document.getElementById('base-color-display');
+
+    let currentImgElement = null;
+
+    // --- Event Listeners ---
+    limitInput.oninput = () => document.getElementById('limit-val').textContent = limitInput.value;
+    thresholdInput.oninput = () => document.getElementById('threshold-val').textContent = thresholdInput.value;
+    regenBtn.onclick = processCurrentSettings;
+
+    imageInput.addEventListener('change', function(e) {
+        const file = e.target.files[0];
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onload = function(event) {
+            const img = new Image();
+            img.onload = function() {
+                currentImgElement = img;
+                preview.src = img.src;
+                preview.style.display = 'block';
+                processCurrentSettings();
+            }
+            img.src = event.target.result;
+        }
+        reader.readAsDataURL(file);
+    });
+
+    // --- Main Logic: Extract Colors ---
+    function processCurrentSettings() {
+        if (!currentImgElement) return;
+        
+        statusMsg.textContent = "Processing...";
+        paletteContainer.innerHTML = '';
+        scaleContainer.style.display = 'none'; // Hide scale when regenerating main palette
+
+        const maxColors = parseInt(limitInput.value);
+        const threshold = parseInt(thresholdInput.value);
+        
+        // Resize for performance
+        const scaleFactor = 200 / Math.max(currentImgElement.width, currentImgElement.height);
+        canvas.width = currentImgElement.width * scaleFactor;
+        canvas.height = currentImgElement.height * scaleFactor;
+        ctx.drawImage(currentImgElement, 0, 0, canvas.width, canvas.height);
+        
+        const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height).data;
+        const colorCounts = {};
+
+        // Scan pixels
+        for (let i = 0; i < imageData.length; i += 4) {
+            if (imageData[i + 3] < 128) continue; // Skip Transparent
+            const hex = rgbToHex(imageData[i], imageData[i + 1], imageData[i + 2]);
+            colorCounts[hex] = (colorCounts[hex] || 0) + 1;
+        }
+
+        // Sort by frequency
+        const sortedColors = Object.keys(colorCounts)
+            .map(hex => ({ hex, count: colorCounts[hex] }))
+            .sort((a, b) => b.count - a.count);
+
+        // Filter Similar Colors
+        const distinctColors = [];
+        for (const color of sortedColors) {
+            if (distinctColors.length >= maxColors) break;
+            let isTooSimilar = false;
+            for (const existing of distinctColors) {
+                if (getDeltaE(color.hex, existing.hex) < threshold) {
+                    isTooSimilar = true;
+                    break;
+                }
+            }
+            if (!isTooSimilar) distinctColors.push(color);
+        }
+
+        // Render Swatches
+        distinctColors.forEach(color => {
+            const div = document.createElement('div');
+            div.className = 'swatch';
+            div.innerHTML = `
+                <div class="swatch-color" style="width:100px;height:100px; background-color: ${color.hex}" title="Click to Copy"></div>
+                <div class="swatch-info">
+                    <span class="hex-code">${color.hex}</span>
+                    <button class="scale-btn">Make Scale</button>
+                </div>
+            `;
+            
+            // Click color to copy
+            div.querySelector('.swatch-color').onclick = () => {
+                navigator.clipboard.writeText(color.hex);
+                statusMsg.textContent = `Copied ${color.hex}`;
+            };
+
+            // Click button to generate scale
+            div.querySelector('.scale-btn').onclick = () => {
+                generateScale(color.hex);
+            };
+
+            paletteContainer.appendChild(div);
+        });
+
+        statusMsg.textContent = `Found ${distinctColors.length} unique colors.`;
+    }
+
+    // --- Logic: "Fill in the Gaps" (Scale Generator) ---
+    function generateScale(baseHex) {
+        scaleContainer.style.display = 'block';
+        scaleRow.innerHTML = '';
+        baseColorDisplay.textContent = baseHex;
+        baseColorDisplay.style.color = baseHex;
+        baseColorDisplay.style.fontWeight = 'bold';
+
+        // 1. Convert Base to HSL
+        const rgb = hexToRgb(baseHex);
+        const hsl = rgbToHsl(rgb.r, rgb.g, rgb.b); // H:0-360, S:0-1, L:0-1
+
+        // 2. Define Anchor Points
+        // 500 = The Base Color
+        // 100 = Very Light (L ~ 0.95)
+        // 900 = Very Dark (L ~ 0.10)
+        
+        const lightnessMap = {
+            100: 0.96,
+            200: 0.86,
+            300: 0.76,
+            400: 0.66,
+            500: hsl.l, // Keep original lightness for base
+            600: hsl.l * 0.85, // Darken from base
+            700: hsl.l * 0.70,
+            800: hsl.l * 0.55,
+            900: 0.12
+        };
+
+        // If base is already very light or dark, the map needs adjustment,
+        // but for a simple tool, we interpolate Lightness (L) while keeping Hue (H) & Saturation (S).
+
+        // Special handling: if base is extremely dark/light, we force linear interpolation 
+        // between 0.98 (white) and 0.10 (black).
+        
+        // Let's use a simpler Linear Interpolation for consistency:
+        const scale = [];
+        for(let i=1; i<=9; i++) {
+            const step = i * 100; // 100, 200, ... 900
+            
+            // Calculate target Lightness
+            // We want 100->95% L, 900->10% L, and 500->Base L
+            let targetL;
+            
+            if (step === 500) {
+                targetL = hsl.l;
+            } else if (step < 500) {
+                // Interpolate between 95% and Base L
+                const p = (step - 100) / 400; // 0 to 1
+                targetL = 0.96 - (p * (0.96 - hsl.l));
+            } else {
+                // Interpolate between Base L and 10%
+                const p = (step - 500) / 400; // 0 to 1
+                targetL = hsl.l - (p * (hsl.l - 0.10));
+            }
+
+            const newRgb = hslToRgb(hsl.h, hsl.s, targetL);
+            const newHex = rgbToHex(newRgb[0], newRgb[1], newRgb[2]);
+            
+            scale.push({ step, hex: newHex, l: targetL });
+        }
+
+        // Render Scale
+        scale.forEach(item => {
+            const el = document.createElement('div');
+            el.className = `scale-step ${item.l > 0.5 ? 'light-text' : ''}`;
+            el.style.backgroundColor = item.hex;
+            el.innerHTML = `
+                <span class="scale-label">${item.step}</span>
+                <span>${item.hex}</span>
+            `;
+            el.onclick = () => {
+                navigator.clipboard.writeText(item.hex);
+                alert(`Copied ${item.hex}`);
+            };
+            scaleRow.appendChild(el);
+        });
+        
+        // Scroll to scale
+        scaleContainer.scrollIntoView({ behavior: 'smooth' });
+    }
+
+    // --- Helpers ---
+    function rgbToHex(r, g, b) {
+        return "#" + [r, g, b].map(x => {
+            const hex = x.toString(16);
+            return hex.length === 1 ? "0" + hex : hex;
+        }).join("");
+    }
+
+    function hexToRgb(hex) {
+        const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+        return result ? { r: parseInt(result[1], 16), g: parseInt(result[2], 16), b: parseInt(result[3], 16) } : null;
+    }
+
+    // Simple Euclidean distance for "Similarity" check
+    function getDeltaE(hex1, hex2) {
+        const c1 = hexToRgb(hex1);
+        const c2 = hexToRgb(hex2);
+        if(!c1 || !c2) return 0;
+        return Math.sqrt(Math.pow(c2.r-c1.r, 2) + Math.pow(c2.g-c1.g, 2) + Math.pow(c2.b-c1.b, 2));
+    }
+
+    // RGB <-> HSL Converters
+    function rgbToHsl(r, g, b){
+        r /= 255, g /= 255, b /= 255;
+        var max = Math.max(r, g, b), min = Math.min(r, g, b);
+        var h, s, l = (max + min) / 2;
+        if(max == min){ h = s = 0; } else {
+            var d = max - min;
+            s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
+            switch(max){
+                case r: h = (g - b) / d + (g < b ? 6 : 0); break;
+                case g: h = (b - r) / d + 2; break;
+                case b: h = (r - g) / d + 4; break;
+            }
+            h /= 6;
+        }
+        return { h, s, l };
+    }
+
+    function hslToRgb(h, s, l){
+        var r, g, b;
+        if(s == 0){ r = g = b = l; } else {
+            var hue2rgb = function hue2rgb(p, q, t){
+                if(t < 0) t += 1;
+                if(t > 1) t -= 1;
+                if(t < 1/6) return p + (q - p) * 6 * t;
+                if(t < 1/2) return q;
+                if(t < 2/3) return p + (q - p) * (2/3 - t) * 6;
+                return p;
+            }
+            var q = l < 0.5 ? l * (1 + s) : l + s - l * s;
+            var p = 2 * l - q;
+            r = hue2rgb(p, q, h + 1/3);
+            g = hue2rgb(p, q, h);
+            b = hue2rgb(p, q, h - 1/3);
+        }
+        return [Math.round(r * 255), Math.round(g * 255), Math.round(b * 255)];
+    }
+</script>
+</body>
+</html>

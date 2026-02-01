@@ -1,0 +1,94 @@
+---
+import CssEffectLayout from "/src/layouts/CssEffectLayout.astro";
+
+---
+
+
+
+<CssEffectLayout>
+ <div class="card">
+  <div class="container" >
+    <h1 class="card-h1">Nord card</h1>
+  </div>
+</div> 
+</CssEffectLayout>
+<script>
+  animate();
+  function animate(){
+    let slider = document.querySelector("#slider-container");
+    console.log(slider);
+  }
+</script>
+<style>
+
+/* Add some padding inside the card container */
+.container {
+  padding: 2px 16px;
+}
+.card {
+
+  --main:#8FBCBB;
+  --second:#526877;
+  --bg:#3B4252;
+  display: flex;             
+  justify-content: center;   
+  align-items: center;       
+  /* Add shadows to create the "card" effect */
+  background-color: var(--bg);
+  width: 300px;
+  height: 500px;
+  position: relative;
+  border-radius: 50px;
+}
+
+@property --rotation {
+  syntax: "<angle>";
+  initial-value: 0deg;
+  inherits: false;
+}
+.card::after,
+.card::before {
+  position: absolute;
+  content: "";
+  border-radius: inherit;
+  inset: -10px;
+  z-index: -1;
+  background-image: conic-gradient( from var(--rotation), var(--second) -10%, var(--main), var(--main),var(--second) 110%);
+  animation: rotation 3s linear infinite;
+}
+
+.card::after {
+  filter: blur(30px);
+  /* make blure larger
+  inset: -10% -10%  ;
+  width: 120%;
+  height: 120%;
+  */
+}
+.card-h1{
+      text-align: center;
+      color:var(--main);
+      font-weight: 900;
+      font-size: 4rem;
+      letter-spacing: -0.2rem;
+      text-shadow:0px 0px 3rem var(--main);
+      -webkit-text-stroke: 0.15rem var(--main);
+}
+      
+@keyframes rotation{
+  from {
+    --rotation:0deg;
+  }
+  to {
+
+    --rotation:360deg;
+  }
+}
+
+
+
+
+</style>
+
+<!-- NOTE: intresting can(of beans) like effect background-image: linear-gradient(to right, black -10%, white,black 110%); -->
+

@@ -1,0 +1,90 @@
+---
+import {Image} from "astro:assets";
+import jjkImage from "/src/assets/css/jjk_op_img1.png";
+import CssEffectLayout from "/src/layouts/CssEffectLayout.astro";
+
+// let text = "I'm selfish, impatient and a little insecure. I make mistakes, I am out of control and at times hard to handle. But if you can't handle me at my worst, then you sure as hell don't deserve me at my best"; 
+
+
+
+// THere is blure in center and green/red glitch like effect on right and left side
+// text has no blure, weighty(1200-1500),
+
+// My idea is to split text as array(objext) and siidggn font,color,weight and other stiles
+// and then slide text acrose the screen
+// i need each div stay ster it reaches center of lement for 0.3sec(or whatever)
+
+//let text = ["I'm selfish, impatient and a little insecure."," I make mistakes, I am out of control and at times"," hard to handle. But if you can't ","handle me at my worst, then you sure as ","hell don't deserve me at my best"]; 
+let text = [
+{"text":"I'm selfish, impatient and a little insecure.","class":"text-red-400 "},
+{"text":"I'm selfish, impatient and a little insecure.","class":"text-white"},
+{"text":"I'm selfish, impatient and a little insecure.","class":"text-blue-400"},
+{"text":"I'm selfish, impatient and a little insecure.","class":"text-red-400"},]
+
+---
+<CssEffectLayout>
+  <Image id="background" src={jjkImage} alt="jjk image" />
+    <div id="slider-container">
+   <!--     -->
+      <div
+          id="sliding-text"
+          >
+          {text.map((passege)=>(
+            <div class={passege["class"]}>
+              {passege["text"]}
+            </div>
+          ))}
+      </div>
+
+    </div>
+</CssEffectLayout>
+<script>
+  animate();
+  function animate(){
+    let slider = document.querySelector("#slider-container");
+    console.log(slider);
+  }
+</script>
+<style>
+  #background{
+    position: absolute;
+  }
+  #slider-container {
+
+    display: flex; /* Use flex to put the mapped divs side-by-side */
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    height: 50px;
+    width: 500px;
+    border-radius: 2px;
+    backdrop-filter: blur(12px);
+    /* The Blur Effect: Left and Right fade */
+    /*mask-image: linear-gradient(
+        to bottom, 
+        transparent 0%, 
+        black 15%, 
+        black 85%, 
+        transparent 120%
+      );*/
+  }
+
+  #sliding-text {
+    display: flex; /* Use flex to put the mapped divs side-by-side */
+    animation: slide 4s linear infinite;
+  }
+  #sliding-text div {
+    text-wrap: nowrap;
+    width: max-content;
+    padding-right: 10px; /* Space between the segments */
+    font-size: 2rem;
+    font-weight: 900;
+  }
+
+  @keyframes slide {
+    from { transform: translateX(-100%); } /* Start off-screen right */
+    to { transform: translateX(100%); }  /* End off-screen left */
+  }
+</style>
+
+
