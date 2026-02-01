@@ -1,5 +1,15 @@
 ---
 import LibraryLayout from "/src/layouts/LibraryLayout.astro";
+import { getCollection } from 'astro:content';
+
+export async function getStaticPaths() {
+  const books = await getCollection('books'); // Or Astro.glob('./*.md') if not using collections
+  return books.map(book => ({
+    params: { slug: book.slug },
+    props: { Content: book.render().then(r => r.Content) }, // Adjust based on your data structure
+  }));
+}
+
 const { Content } = await Astro.props;
 ---
 

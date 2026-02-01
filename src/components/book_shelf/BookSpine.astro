@@ -21,7 +21,7 @@ if (roll === 1) {
 }
 
 // Random Letter Spacing (between -0.1em and 0.05em)
-const letterSpacing = (Math.random() * (0.05 - (-0.1)) + (-0.1)).toFixed(3);
+const letterSpacing = (Math.random() * (0.05 - -0.1) + -0.1).toFixed(3);
 
 // Random Font Selection
 const fonts = ["serif", "sans-serif", "monospace", "system-ui"];
@@ -29,16 +29,14 @@ const randomFont = fonts[book_seed % fonts.length];
 
 const title_font_weight = Math.max(book_seed % 1200, 800);
 
-
 const isFavorite = jsonBook.data.doc_favorites_time > 0;
 const bookStyle = `
   background: #3E4B5B;
   border: 2px solid ${isFavorite ? "#B48EAD" : "#81A1C1"};
   text-wrap: wrap;
-  color: ${isFavorite ? "#B48EAD" : "#81A1C1"}; 
+  color: ${isFavorite ? "#B48EAD" : "#81A1C1"};
   width: ${book_width}px;
   height: ${book_height}px;
-  // transform: rotate(90deg) scaleX(-1);
 `;
 let randomColor = "#" + ((book_seed * 0xffffff) << 0).toString(16);
 
@@ -86,7 +84,7 @@ switch (true) {
     bookTitleFontSize = `${fontReferenceWidth / 3}px`;
     break;
   default:
-  bookTitleFontSize = `${fontReferenceWidth / 2.5}px`;
+    bookTitleFontSize = `${fontReferenceWidth / 2.5}px`;
 }
 
 // TODO: handle EXEPTION large title on small books  is overflowing
@@ -111,14 +109,25 @@ filterdBookTitle = wrapBookTitle(filterdBookTitle);
 
 function glueArticles(text) {
   // List of words that should never sit at the end of a line
-  const articles = ["of", "the", "a", "an", "and", "in", "on", "with", "for", "by"];
-  
+  const articles = [
+    "of",
+    "the",
+    "a",
+    "an",
+    "and",
+    "in",
+    "on",
+    "with",
+    "for",
+    "by",
+  ];
+
   let words = text.split(" ");
-  
+
   for (let i = 0; i < words.length - 1; i++) {
     // If the current word is in our list, swap the space after it for a non-breaking space
     if (articles.includes(words[i].toLowerCase())) {
-      words[i] = words[i] + "\u00A0"; 
+      words[i] = words[i] + "\u00A0";
       words[i] = words[i] + words[i + 1];
       words.splice(i + 1, 1);
     }
@@ -151,21 +160,22 @@ filterdBookTitle = glueArticles(filterdBookTitle);
           overflow: hidden;
         `
     >
-        <div
-          style=`
+      <div
+        style=`
             text-wrap: pretty;
             font-weight: ${title_font_weight};
-            letter-spacing: ${letterSpacing}em; 
+            letter-spacing: ${letterSpacing}em;
             font-family: ${randomFont};
             transform: rotate(-90deg);
-            font-size: ${bookTitleFontSize}; 
+            font-size: ${bookTitleFontSize};
             align-items: center;
           `
-          set:html={filterdBookTitle}
-        />
+        set:html={filterdBookTitle}
+      />
     </div>
   </a>
 </div>
+
 <style>
   .book {
     transform-style: preserve-3d;
@@ -178,33 +188,31 @@ filterdBookTitle = glueArticles(filterdBookTitle);
     all: unset;
     cursor: pointer;
   }
-
-
-
-  .bookSpine{
-    /* The Spine Color & 3D Gradient */
+  .bookSpine {
     background-color: var(--randomColor);
     background-image: linear-gradient(
-      90deg, 
-      rgba(255,255,255,0.2) 0%, 
-      rgba(255,255,255,0) 20%, 
-      rgba(0,0,0,0.1) 80%, 
-      rgba(0,0,0,0.4) 100%);
-    
+      90deg,
+      rgba(255, 255, 255, 0.2) 0%,
+      rgba(255, 255, 255, 0) 20%,
+      rgba(0, 0, 0, 0.1) 80%,
+      rgba(0, 0, 0, 0.4) 100%
+    );
+
     /* Shadow for depth */
-    box-shadow: 
-      inset 2px 0 5px rgba(255,255,255,0.3), /* Highlight left */
-      inset -2px 0 5px rgba(0,0,0,0.3),      /* Shadow right */
-      5px 5px 10px rgba(0,0,0,0.3);          /* Drop shadow */
-      
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    box-shadow:
+      inset 2px 0 5px rgba(255, 255, 255, 0.3),
+      /* Highlight left */ inset -2px 0 5px rgba(0, 0, 0, 0.3),
+      /* Shadow right */ 5px 5px 10px rgba(0, 0, 0, 0.3); /* Drop shadow */
+
+    transition:
+      transform 0.3s ease,
+      box-shadow 0.3s ease;
   }
   /* Hover Effect: Pull book out */
   .bookSpine:hover {
     transform: translateY(-10px) translateX(-5px);
-    box-shadow: 
-      inset 2px 0 5px rgba(255,255,255,0.3),
-      10px 15px 20px rgba(0,0,0,0.4);
+    box-shadow:
+      inset 2px 0 5px rgba(255, 255, 255, 0.3),
+      10px 15px 20px rgba(0, 0, 0, 0.4);
   }
-
 </style>

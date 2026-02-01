@@ -1,21 +1,10 @@
 ---
 import Layout from "../layouts/Layout.astro";
-import Shelf from "../components/book_shelf/Shelf.astro";
-import library from "../readEra_backup/library.json";
-
-function get_read_books(library_data: any) {
-  return library_data.docs.filter((book) => book.data.doc_have_read_time > 0);
-}
-
-let readBooks = get_read_books(library);
-readBooks = readBooks.sort(
-  (a, b) => b["data"]["doc_have_read_time"] - a["data"]["doc_have_read_time"],
-);
 ---
 
 <Layout>
   <!-- <Shelf jsonBooks={readBooks.slice(0, 30)} /> -->
-  <Shelf jsonBooks={readBooks} />
+      <a class="text-blue-400 font-bold text-2xl" href=`${import.meta.env.BASE_URL}/books/shelf`>Shelf</a>
 </Layout>
 
 <style>
@@ -23,5 +12,6 @@ readBooks = readBooks.sort(
     display: flex;
     justify-content: center;
     height: 100vh;
+
   }
 </style>

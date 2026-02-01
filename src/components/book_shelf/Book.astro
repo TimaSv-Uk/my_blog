@@ -5,10 +5,11 @@ import { getCollection } from "astro:content";
 const thisBookReviws = await getCollection("book_reviews", ({ data }) => {
   return data.uri === jsonBook.uri;
 });
-console.log(jsonBook.data)
+console.log(jsonBook.data);
 
-const redable_doc_have_read_time = new Date(jsonBook.data.doc_have_read_time).toLocaleString();
-
+const redable_doc_have_read_time = new Date(
+  jsonBook.data.doc_have_read_time,
+).toLocaleString();
 ---
 
 <!-- <h1>Book data: {JSON.stringify(jsonBook)}</h1> -->

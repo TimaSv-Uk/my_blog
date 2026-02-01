@@ -72,7 +72,6 @@ const bookSizeMinMax = {
     const shelf = document.getElementById(shelfID);
     const bookSpines = shelf.querySelectorAll(bookSpine);
     let bookRows = putBooksOnShelfs(bookSpines, shelf.clientWidth);
-    console.log(bookRows);
     for (let bookRow in bookRows) {
       let booksInRow = bookRows[bookRow];
       let shelfRow = document.getElementById(`${bookRow}`);
