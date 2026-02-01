@@ -8,7 +8,7 @@ import tailwindcss from "@tailwindcss/vite";
 export default defineConfig({
   output: "static",
   site: "https://timasv-uk.github.io",
-  base: '/my_readEra',
+  base: '/my_blog',
 
   vite: {
     plugins: [tailwindcss()],
